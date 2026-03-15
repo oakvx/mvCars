@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MV Cars · Auto Usate Reggio Emilia — Concessionaria Fogliano</title>
+<meta name="description" content="MV Cars di Marco Morreale: auto usate a Fogliano, Reggio Emilia. Permuta, finanziamento, garanzia inclusa su ogni vettura. Chiama o scrivi su WhatsApp: 379 172 8793.">
+<meta name="theme-color" content="#03030a">
+<meta property="og:title"       content="MV Cars · Auto Usate Reggio Emilia">
+<meta property="og:description" content="Rivenditore auto usate a Fogliano (RE). Permuta, finanziamento, garanzia. 379 172 8793.">
+<meta property="og:type"        content="website">
+
+<!-- Schema.org AutoDealer -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"AutoDealer","name":"MV Cars di Morreale Marco","telephone":"+393791728793","address":{"@type":"PostalAddress","streetAddress":"Via Melissa, 15/b","addressLocality":"Fogliano","addressRegion":"RE","postalCode":"42123","addressCountry":"IT"},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],"opens":"09:00","closes":"19:00"}],"sameAs":["https://www.instagram.com/mv_cars25/","https://impresapiu.subito.it/shops/54997-mv-cars"]}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════
+   RESET + TOKENS
+═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --bg:           #03030a;
+  --bg2:          #07070f;
+  --text-hi:      rgba(255,255,255,0.88);
+  --text-mid:     rgba(255,255,255,0.62);
+  --text-low:     rgba(255,255,255,0.38);
+  --text-dim:     rgba(255,255,255,0.22);
+  --line:         rgba(255,255,255,0.07);
+  --line2:        rgba(255,255,255,0.12);
+  --df: 'Syncopate', sans-serif;   /* brand / label / title */
+  --sf: 'Outfit',    sans-serif;   /* body / readable content */
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-mid);
+  font-family: var(--sf);
+  font-size: 16px;
+  line-height: 1.65;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(140,180,220,0.18); border-radius: 2px; }
+
+/* ── focus-visible global ── */
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid rgba(140,185,225,0.60);
+  outline-offset: 3px;
+}
+
+/* ── prefers-reduced-motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .rv { opacity: 1 !important; transform: none !important; }
+  #c  { display: none !important; }
+}
+
+/* ═══════════════════════════════════════════
+   CANVAS (Three.js)
+═══════════════════════════════════════════ */
+#c {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100vh;
+  pointer-events: none; z-index: 0;
+  transition: opacity 0.3s;
+}
+
+/* ═══════════════════════════════════════════
+   GRAIN
+═══════════════════════════════════════════ */
+.grain {
+  position: fixed; inset: 0; z-index: 100; pointer-events: none;
+  opacity: 0.020;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+}
+
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.4rem 6vw;
+}
+.nav-logo {
+  font-family: var(--df); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: rgba(255,255,255,0.58); text-decoration: none;
+  transition: color 0.3s;
+}
+.nav-logo:hover,
+.nav-logo:focus-visible { color: rgba(255,255,255,0.85); }
+.nav-ul { display: flex; gap: 2.4rem; list-style: none; }
+.nav-ul a {
+  font-family: var(--df); font-size: 0.50rem; font-weight: 400;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  text-decoration: none; color: var(--text-dim);
+  transition: color 0.3s;
+}
+.nav-ul a:hover,
+.nav-ul a:focus-visible { color: rgba(255,255,255,0.70); }
+@media (max-width: 640px) { .nav-ul { display: none; } }
+
+/* ═══════════════════════════════════════════
+   BUTTONS (shared system)
+═══════════════════════════════════════════ */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.55rem;
+  padding: 0.85rem 2.0rem;
+  font-family: var(--df); font-weight: 700;
+  font-size: 0.54rem; letter-spacing: 0.20em; text-transform: uppercase;
+  text-decoration: none; border: 1px solid; cursor: pointer;
+  background: transparent; white-space: nowrap;
+  transition: background 0.3s, border-color 0.3s, color 0.3s, transform 0.2s;
+  position: relative; overflow: hidden;
+}
+.btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(110deg, transparent, rgba(255,255,255,0.04), transparent);
+  transform: translateX(-120%); transition: transform 0.6s;
+}
+.btn:hover::before, .btn:focus-visible::before { transform: translateX(120%); }
+.btn:hover, .btn:focus-visible { transform: translateY(-1px); }
+
+.btn-primary {
+  border-color: rgba(255,255,255,0.28); color: rgba(255,255,255,0.82);
+}
+.btn-primary:hover, .btn-primary:focus-visible {
+  border-color: rgba(255,255,255,0.52); color: rgba(255,255,255,1);
+  background: rgba(255,255,255,0.05);
+}
+
+.btn-wa {
+  border-color: rgba(37,211,102,0.28); color: rgba(70,200,115,0.75);
+}
+.btn-wa:hover, .btn-wa:focus-visible {
+  border-color: rgba(37,211,102,0.55); color: rgba(90,220,130,0.92);
+  background: rgba(37,211,102,0.06);
+}
+
+.btn-outline {
+  border-color: rgba(255,255,255,0.11); color: var(--text-low);
+}
+.btn-outline:hover, .btn-outline:focus-visible {
+  border-color: rgba(140,190,230,0.30); color: rgba(155,210,240,0.85);
+}
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+#hero {
+  position: relative; z-index: 1;
+  height: 100vh; min-height: 600px;
+  display: flex; flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 6vw calc(7vh + 2rem);
+  pointer-events: none;
+}
+.hero-badge {
+  font-family: var(--df); font-size: 0.50rem;
+  letter-spacing: 0.38em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 1.0rem;
+}
+.hero-h1 {
+  font-family: var(--df); font-weight: 700;
+  font-size: clamp(2.6rem, 8vw, 7rem);
+  line-height: 0.97; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--text-hi);
+}
+.hero-h1 span {
+  display: block; font-weight: 400;
+  font-size: 0.33em; letter-spacing: 0.34em;
+  color: var(--text-low); margin-top: 1.0rem;
+  text-transform: uppercase;
+}
+/* Trust micro-bar */
+.hero-trust {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 0.4rem 1.0rem; margin-top: 1.8rem;
+  font-family: var(--sf); font-size: 0.85rem; font-weight: 400;
+  color: var(--text-low);
+  pointer-events: none;
+}
+.hero-trust .ht-sep { color: var(--text-dim); opacity: 0.5; }
+@media (max-width: 500px) { .hero-trust .ht-sep { display: none; } }
+
+/* Hero CTA row */
+.hero-actions {
+  pointer-events: all;
+  display: flex; flex-wrap: wrap; gap: 0.75rem;
+  margin-top: 2.4rem;
+}
+/* Scroll hint */
+.hero-scroll {
+  pointer-events: all;
+  margin-top: 2.2rem; display: inline-flex; align-items: center; gap: 1.0rem;
+  font-family: var(--df); font-size: 0.46rem;
+  letter-spacing: 0.30em; text-transform: uppercase;
+  color: var(--text-dim); text-decoration: none; transition: color 0.4s;
+}
+.hero-scroll svg { width: 12px; height: 12px; opacity: 0.28; transition: transform 0.4s; }
+.hero-scroll:hover { color: rgba(180,215,240,0.60); }
+.hero-scroll:hover svg { transform: translateY(4px); opacity: 0.70; }
+
+/* ═══════════════════════════════════════════
+   MAIN WRAPPER
+═══════════════════════════════════════════ */
+#main {
+  position: relative; z-index: 2;
+  background: linear-gradient(to bottom, transparent 0%, var(--bg) 5rem);
+}
+
+/* ═══════════════════════════════════════════
+   IRIDESCENT RULE
+═══════════════════════════════════════════ */
+.irid-rule {
+  height: 1px; width: 100%;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(80,170,255,0.22) 20%,
+    rgba(255,255,255,0.10) 38%,
+    rgba(255,190,80,0.22) 52%,
+    rgba(180,120,255,0.20) 68%,
+    rgba(80,200,175,0.18) 82%,
+    transparent 100%
+  );
+}
+
+/* ═══════════════════════════════════════════
+   STATS RIBBON
+═══════════════════════════════════════════ */
+.ribbon {
+  background: var(--bg2);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 1.8rem 6vw;
+  display: flex; justify-content: space-around; align-items: center;
+  flex-wrap: wrap; gap: 1.2rem;
+}
+.rib-item { text-align: center; min-width: 90px; }
+.rib-num {
+  font-family: var(--df); font-weight: 700;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  color: var(--text-hi); letter-spacing: 0.04em;
+  display: block; line-height: 1;
+}
+.rib-lbl {
+  font-family: var(--df); font-size: 0.48rem;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--text-low); display: block; margin-top: 0.4rem;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION SHARED
+═══════════════════════════════════════════ */
+.section { padding: 5rem 6vw; }
+.section-inner { max-width: 1320px; margin: 0 auto; }
+
+.s-label {
+  font-family: var(--df); font-size: 0.50rem;
+  letter-spacing: 0.36em; text-transform: uppercase;
+  color: var(--text-low); margin-bottom: 1.0rem;
+  display: flex; align-items: center; gap: 1.2rem;
+}
+.s-label::before {
+  content: ''; display: block; width: 26px; height: 1px;
+  background: var(--line2); flex-shrink: 0;
+}
+.s-title {
+  font-family: var(--df); font-weight: 700;
+  font-size: clamp(1.7rem, 4vw, 3.0rem);
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text-hi); margin-bottom: 2.5rem; line-height: 1.1;
+}
+.s-title .sub {
+  display: block; font-family: var(--sf); font-weight: 400;
+  font-size: 0.84rem; letter-spacing: 0.04em;
+  color: var(--text-low); margin-top: 0.6rem; text-transform: none;
+}
+
+/* ═══════════════════════════════════════════
+   CARS SECTION
+═══════════════════════════════════════════ */
+#annunci { background: var(--bg); }
+
+/* meta row: count · timestamp · link */
+.cars-meta {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 0.4rem 1.0rem; margin-bottom: 2.0rem;
+  font-family: var(--sf); font-size: 0.80rem; color: var(--text-low);
+}
+.cm-sep { color: var(--text-dim); opacity: 0.5; }
+.cm-link {
+  font-family: var(--df); font-size: 0.44rem;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  text-decoration: none; color: rgba(120,175,215,0.50);
+  transition: color 0.3s;
+}
+.cm-link:hover, .cm-link:focus-visible { color: rgba(155,210,240,0.80); }
+
+/* loading / empty / error states */
+.cars-state {
+  text-align: center; padding: 4rem 1rem;
+}
+.cars-state-icon { font-size: 2rem; opacity: 0.18; display: block; margin-bottom: 1rem; }
+.cars-state-msg {
+  font-family: var(--df); font-size: 0.55rem;
+  letter-spacing: 0.30em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 1.5rem;
+}
+.cars-state-sub {
+  font-family: var(--sf); font-size: 0.85rem;
+  color: var(--text-low); margin-bottom: 1.5rem;
+}
+.cars-loading .dot {
+  display: inline-block; animation: loadDot 1.2s ease-in-out infinite;
+}
+.cars-loading .dot:nth-child(2) { animation-delay: 0.2s; }
+.cars-loading .dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes loadDot { 0%,80%,100%{opacity:0.2} 40%{opacity:1} }
+
+/* flex grid — --cols set via JS */
+.cars-grid {
+  --cols: 3;
+  display: flex; flex-wrap: wrap;
+  gap: 1px; background: var(--line);
+  border: 1px solid var(--line);
+}
+@media (max-width: 900px) { .cars-grid { --cols: 2; } }
+@media (max-width: 560px) { .cars-grid { --cols: 1; } }
+
+/* iridescent border on hover */
+@property --ba { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+@keyframes spin-ba { to { --ba: 360deg; } }
+
+.car-card {
+  flex: 1 1 calc(100% / var(--cols) - 1px);
+  min-width: min(270px, 100%);
+  background: var(--bg2); text-decoration: none; color: inherit;
+  display: flex; flex-direction: column;
+  transition: background 0.3s;
+  position: relative; overflow: hidden;
+}
+.car-card:hover,
+.car-card:focus-visible { background: rgba(255,255,255,0.020); outline: none; }
+.car-card::after {
+  content: ''; position: absolute; inset: 0;
+  background: conic-gradient(from var(--ba),
+    rgba(80,170,255,0), rgba(255,200,90,0.42),
+    rgba(185,120,255,0.38), rgba(80,205,180,0.38), rgba(80,170,255,0)
+  ) border-box;
+  border: 1px solid transparent;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out; mask-composite: exclude;
+  opacity: 0; transition: opacity 0.4s;
+  animation: spin-ba 4s linear infinite;
+  pointer-events: none;
+}
+.car-card:hover::after { opacity: 1; }
+
+.car-img {
+  width: 100%; aspect-ratio: 16/10;
+  overflow: hidden; background: #0a0a12; flex-shrink: 0;
+}
+.car-img img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform 0.65s ease, filter 0.4s ease;
+  filter: saturate(0.74) brightness(0.88);
+}
+.car-card:hover .car-img img,
+.car-card:focus-visible .car-img img {
+  transform: scale(1.04);
+  filter: saturate(0.92) brightness(1.02);
+}
+.car-img-ph {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--df); font-size: 0.68rem; letter-spacing: 0.16em;
+  color: rgba(255,255,255,0.10); text-transform: uppercase; aspect-ratio: 16/10;
+}
+
+.car-body { padding: 1.15rem 1.3rem 1.4rem; flex: 1; display: flex; flex-direction: column; }
+
+.car-tags { display: flex; gap: 0.3rem; flex-wrap: wrap; margin-bottom: 0.65rem; }
+.ct {
+  font-family: var(--df); font-size: 0.44rem;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 0.20rem 0.52rem; border: 1px solid;
+}
+.ct-b { border-color:rgba(70,170,90,0.25);  color:rgba(110,200,130,0.72); }
+.ct-d { border-color:rgba(70,130,200,0.25); color:rgba(100,160,235,0.72); }
+.ct-e { border-color:rgba(0,190,220,0.25);  color:rgba(60,215,235,0.72); }
+.ct-h { border-color:rgba(110,185,70,0.25); color:rgba(145,205,100,0.72); }
+.ct-m { border-color:rgba(160,160,160,0.14);color:rgba(200,200,200,0.45); }
+
+.car-name {
+  font-family: var(--df); font-weight: 700;
+  font-size: 0.76rem; letter-spacing: 0.09em;
+  text-transform: uppercase; color: var(--text-hi); line-height: 1.35;
+}
+.car-spec {
+  font-family: var(--sf); font-size: 0.83rem; font-weight: 400;
+  color: var(--text-low); margin-top: 0.28rem;
+  letter-spacing: 0.02em; line-height: 1.5;
+}
+.car-footer {
+  margin-top: auto; padding-top: 0.9rem;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.car-price {
+  font-family: var(--df); font-weight: 700;
+  font-size: 1.05rem; letter-spacing: 0.04em; color: var(--text-hi);
+}
+.car-arrow {
+  font-family: var(--df); font-size: 0.42rem;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text-dim); transition: color 0.3s, transform 0.3s;
+}
+.car-card:hover .car-arrow,
+.car-card:focus-visible .car-arrow { color: rgba(155,205,235,0.75); transform: translateX(4px); }
+
+/* ═══════════════════════════════════════════
+   PERCHÉ MV CARS
+═══════════════════════════════════════════ */
+#perche { background: var(--bg2); }
+
+.perche-grid {
+  display: grid; grid-template-columns: repeat(2,1fr);
+  border: 1px solid var(--line); gap: 0;
+}
+@media (max-width: 620px) { .perche-grid { grid-template-columns: 1fr; } }
+
+.perche-item {
+  padding: 2.4rem 2.0rem;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  transition: background 0.3s;
+}
+.perche-item:hover { background: rgba(255,255,255,0.015); }
+.perche-item:nth-child(2n) { border-right: none; }
+@media (max-width: 620px) {
+  .perche-item { border-right: none; }
+}
+
+.perche-icon {
+  font-size: 1.1rem; opacity: 0.28; display: block; margin-bottom: 1.2rem;
+  color: rgba(140,185,220,0.8);
+}
+.perche-item h3 {
+  font-family: var(--df); font-weight: 700;
+  font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(255,255,255,0.80); margin-bottom: 0.65rem;
+}
+.perche-item p {
+  font-family: var(--sf); font-size: 0.90rem; font-weight: 400;
+  color: var(--text-mid); line-height: 1.80;
+}
+
+/* ═══════════════════════════════════════════
+   PROCESSO ACQUISTO
+═══════════════════════════════════════════ */
+#processo { background: var(--bg); }
+
+.steps {
+  display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+  align-items: start; gap: 0;
+  border: 1px solid var(--line);
+}
+@media (max-width: 860px) {
+  .steps { grid-template-columns: 1fr 1fr; }
+  .step-sep { display: none; }
+}
+@media (max-width: 480px) {
+  .steps { grid-template-columns: 1fr; }
+}
+
+.step {
+  padding: 2.2rem 1.8rem;
+  border-right: 1px solid var(--line);
+  transition: background 0.3s;
+}
+.step:last-child { border-right: none; }
+.step:hover { background: rgba(255,255,255,0.014); }
+
+.step-sep {
+  width: 1px; background: var(--line);
+  align-self: stretch; display: block;
+}
+
+.step-num {
+  font-family: var(--df); font-weight: 700;
+  font-size: clamp(1.8rem, 4vw, 3.0rem);
+  color: rgba(255,255,255,0.07); line-height: 1;
+  display: block; margin-bottom: 1.2rem;
+  letter-spacing: 0.04em;
+}
+.step h3 {
+  font-family: var(--df); font-weight: 700;
+  font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(255,255,255,0.78); margin-bottom: 0.6rem;
+}
+.step p {
+  font-family: var(--sf); font-size: 0.88rem; font-weight: 400;
+  color: var(--text-mid); line-height: 1.78;
+}
+
+/* ═══════════════════════════════════════════
+   SERVIZI
+═══════════════════════════════════════════ */
+#servizi { background: var(--bg2); }
+
+.serv-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  border: 1px solid var(--line); gap: 0;
+}
+@media (max-width: 860px)  { .serv-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 480px)  { .serv-grid { grid-template-columns: 1fr; } }
+
+.serv-item {
+  padding: 2.0rem 1.8rem;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  transition: background 0.3s;
+}
+.serv-item:hover { background: rgba(255,255,255,0.015); }
+.serv-item:nth-child(3n)   { border-right: none; }
+@media (max-width: 860px) {
+  .serv-item:nth-child(3n)  { border-right: 1px solid var(--line); }
+  .serv-item:nth-child(2n)  { border-right: none; }
+}
+@media (max-width: 480px) { .serv-item { border-right: none; } }
+
+.serv-num {
+  font-family: var(--df); font-size: 0.46rem;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--text-dim); margin-bottom: 0.9rem; display: block;
+}
+.serv-item h3 {
+  font-family: var(--df); font-weight: 700;
+  font-size: 0.63rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: rgba(255,255,255,0.78);
+  margin-bottom: 0.55rem;
+}
+.serv-item p {
+  font-family: var(--sf); font-size: 0.88rem; font-weight: 400;
+  color: var(--text-mid); line-height: 1.78;
+}
+
+/* ═══════════════════════════════════════════
+   REVIEWS
+═══════════════════════════════════════════ */
+#reviews { background: var(--bg); }
+
+.reviews-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 1px; background: var(--line); border: 1px solid var(--line);
+}
+@media (max-width: 760px) { .reviews-grid { grid-template-columns: 1fr; } }
+
+.review-card { background: var(--bg); padding: 2.0rem 1.8rem; }
+.rev-stars {
+  color: rgba(255,210,80,0.78); font-size: 0.78rem;
+  letter-spacing: 0.12em; margin-bottom: 0.9rem; display: block;
+}
+.rev-text {
+  font-family: var(--sf); font-size: 0.92rem; font-weight: 400;
+  color: var(--text-mid); line-height: 1.85; font-style: italic;
+}
+.rev-author {
+  font-family: var(--df); font-size: 0.46rem;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text-low); margin-top: 1.1rem; display: block;
+}
+
+/* ═══════════════════════════════════════════
+   FAQ
+═══════════════════════════════════════════ */
+#faq { background: var(--bg2); }
+
+.faq-list {
+  border: 1px solid var(--line);
+}
+.faq-item {
+  border-bottom: 1px solid var(--line);
+}
+.faq-item:last-child { border-bottom: none; }
+
+.faq-q {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  gap: 1.5rem; padding: 1.5rem 1.8rem;
+  background: transparent; border: none; cursor: pointer;
+  text-align: left; transition: background 0.3s;
+  font-family: var(--sf); font-size: 0.95rem; font-weight: 500;
+  color: rgba(255,255,255,0.75); line-height: 1.4;
+}
+.faq-q:hover, .faq-q:focus-visible { background: rgba(255,255,255,0.018); }
+.faq-q:focus-visible { outline: 2px solid rgba(140,185,225,0.55); outline-offset: -2px; }
+
+.faq-chevron {
+  width: 14px; height: 14px; flex-shrink: 0;
+  color: var(--text-low); transition: transform 0.35s ease;
+}
+.faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+.faq-a {
+  padding: 0 1.8rem;
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.40s ease, padding 0.40s ease;
+}
+.faq-item.open .faq-a {
+  max-height: 400px;
+  padding: 0 1.8rem 1.5rem;
+}
+.faq-a p {
+  font-family: var(--sf); font-size: 0.90rem; font-weight: 400;
+  color: var(--text-mid); line-height: 1.82;
+}
+
+/* ═══════════════════════════════════════════
+   CONTATTI
+═══════════════════════════════════════════ */
+#contatti { background: var(--bg); }
+
+.cnt-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 5rem; align-items: start;
+}
+@media (max-width: 760px) { .cnt-grid { grid-template-columns: 1fr; gap: 3rem; } }
+
+.cnt-field { margin-bottom: 1.75rem; }
+.cnt-lbl {
+  font-family: var(--df); font-size: 0.48rem;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--text-low); display: block; margin-bottom: 0.32rem;
+}
+.cnt-val {
+  font-family: var(--sf); font-size: 1.0rem; font-weight: 400;
+  color: var(--text-mid);
+}
+.cnt-val a { color: inherit; text-decoration: none; transition: color 0.3s; }
+.cnt-val a:hover, .cnt-val a:focus-visible { color: rgba(155,210,240,0.90); }
+
+.cnt-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
+
+.map-box {
+  background: var(--bg2); border: 1px solid var(--line);
+  aspect-ratio: 4/3;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+  position: relative; overflow: hidden;
+}
+.map-box::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 44px, rgba(255,255,255,0.008) 44px, rgba(255,255,255,0.008) 45px),
+    repeating-linear-gradient(90deg, transparent, transparent 44px, rgba(255,255,255,0.008) 44px, rgba(255,255,255,0.008) 45px);
+}
+.map-pin-wrap { position: relative; z-index: 1; animation: pinFloat 3.8s ease-in-out infinite; }
+@keyframes pinFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+.map-addr {
+  font-family: var(--sf); font-size: 0.88rem; font-weight: 400;
+  color: var(--text-low); line-height: 1.9; margin-top: 1.2rem;
+  position: relative; z-index: 1;
+}
+.map-lnk {
+  margin-top: 1.4rem;
+  font-family: var(--df); font-size: 0.44rem;
+  letter-spacing: 0.26em; text-transform: uppercase;
+  text-decoration: none; color: rgba(120,175,215,0.40);
+  transition: color 0.3s; position: relative; z-index: 1;
+}
+.map-lnk:hover, .map-lnk:focus-visible { color: rgba(165,210,245,0.72); }
+
+/* ═══════════════════════════════════════════
+   FINAL CTA SECTION
+═══════════════════════════════════════════ */
+#cta-finale {
+  background: var(--bg2);
+  text-align: center;
+  padding: 5.5rem 6vw;
+}
+.cta-finale-inner { max-width: 680px; margin: 0 auto; }
+.cta-finale-title {
+  font-family: var(--df); font-weight: 700;
+  font-size: clamp(1.6rem, 4vw, 2.8rem);
+  letter-spacing: 0.07em; text-transform: uppercase;
+  color: var(--text-hi); line-height: 1.1; margin-bottom: 1.0rem;
+}
+.cta-finale-sub {
+  font-family: var(--sf); font-size: 0.95rem; font-weight: 400;
+  color: var(--text-mid); line-height: 1.75; margin-bottom: 2.4rem;
+}
+.cta-finale-actions {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 0.8rem;
+}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+footer {
+  background: #000; border-top: 1px solid var(--line);
+  padding: 2.6rem 6vw;
+}
+.ft {
+  max-width: 1320px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  align-items: center; gap: 2rem;
+}
+@media (max-width: 760px) {
+  .ft { grid-template-columns: 1fr; text-align: center; gap: 1.5rem; }
+  .ft-links { justify-content: center; }
+}
+.ft-logo {
+  font-family: var(--df); font-weight: 700;
+  font-size: 0.65rem; letter-spacing: 0.30em;
+  text-transform: uppercase; color: var(--text-dim);
+}
+.ft-copy {
+  font-family: var(--sf); font-size: 0.80rem; font-weight: 400;
+  color: rgba(255,255,255,0.18); line-height: 1.9;
+  text-align: center;
+}
+.ft-copy a { color: inherit; text-decoration: none; transition: color 0.3s; }
+.ft-copy a:hover { color: rgba(255,255,255,0.42); }
+.ft-links {
+  display: flex; gap: 2rem; list-style: none; justify-content: flex-end;
+}
+.ft-links a {
+  font-family: var(--df); font-size: 0.44rem;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  text-decoration: none; color: var(--text-dim);
+  transition: color 0.3s;
+}
+.ft-links a:hover, .ft-links a:focus-visible { color: rgba(255,255,255,0.55); }
+
+/* ═══════════════════════════════════════════
+   FAB GROUP (phone + WhatsApp)
+═══════════════════════════════════════════ */
+.fab-group {
+  position: fixed; bottom: 1.8rem; right: 1.8rem;
+  z-index: 80; display: flex; flex-direction: column; gap: 0.65rem;
+  align-items: center;
+}
+.fab {
+  display: flex; align-items: center; justify-content: center;
+  width: 50px; height: 50px; border-radius: 50%;
+  text-decoration: none; border: 1px solid;
+  transition: border-color 0.3s, background 0.3s, transform 0.2s;
+}
+.fab:hover { transform: scale(1.10); }
+.fab-phone {
+  background: var(--bg2); border-color: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.52);
+  animation: fabPulse 4s ease-in-out infinite;
+}
+.fab-phone:hover { border-color: rgba(255,255,255,0.38); color: rgba(255,255,255,0.85); }
+.fab-wa {
+  background: rgba(37,211,102,0.07); border-color: rgba(37,211,102,0.28);
+  color: rgba(70,200,115,0.70);
+}
+.fab-wa:hover { border-color: rgba(37,211,102,0.55); color: rgba(90,220,130,0.92); background: rgba(37,211,102,0.12); }
+@keyframes fabPulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(140,190,230,0); }
+  50%      { box-shadow: 0 0 0 6px rgba(140,190,230,0.06); }
+}
+
+/* ═══════════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════════ */
+.rv { opacity: 0; transform: translateY(16px); transition: opacity 0.80s ease, transform 0.80s ease; }
+.rv.in { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<canvas id="c" aria-hidden="true"></canvas>
+
+<!-- ═══════ NAV ═══════ -->
+<nav class="nav" aria-label="Navigazione principale">
+  <a href="#" class="nav-logo">MV Cars</a>
+  <ul class="nav-ul" role="list">
+    <li><a href="#annunci">Auto</a></li>
+    <li><a href="#servizi">Servizi</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#contatti">Contatti</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════ HERO ═══════ -->
+<section id="hero" aria-labelledby="hero-heading">
+  <div>
+    <p class="hero-badge">Fogliano · Reggio Emilia · Auto Usate di Qualità</p>
+    <h1 class="hero-h1" id="hero-heading">
+      MV Cars
+      <span>Rivenditore di fiducia — Marco Morreale</span>
+    </h1>
+    <div class="hero-trust" aria-label="Trust signals">
+      <span>★★★★★ 5.016 recensioni</span>
+      <span class="ht-sep" aria-hidden="true">·</span>
+      <span>Garanzia su ogni vettura</span>
+      <span class="ht-sep" aria-hidden="true">·</span>
+      <span>Servizio diretto</span>
+    </div>
+    <div class="hero-actions">
+      <a href="tel:+393791728793" class="btn btn-primary" aria-label="Chiama MV Cars">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 2.5c0 0 1.5-1.5 3 .5s1.5 3 1 3.5-.8.5-.4 1.5S8 10.5 9 11s1-.5 1.5-.5 2.5 1.5 2.5 1.5-1.5 2.5-3 1.5S2 8.5 2 2.5z"/></svg>
+        Chiama · 379 172 8793
+      </a>
+      <a href="https://wa.me/393791728793?text=Ciao%20Marco%2C%20ho%20visto%20il%20sito%20MV%20Cars%20e%20vorrei%20informazioni%20su%20una%20vettura."
+         class="btn btn-wa" target="_blank" rel="noopener noreferrer" aria-label="Contatta su WhatsApp">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
+    </div>
+    <a href="#annunci" class="hero-scroll" aria-label="Scorri verso gli annunci">
+      Vedi le auto
+      <svg viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true">
+        <path d="M6.5 1v11M2 8l4.5 4.5L11 8"/>
+      </svg>
+    </a>
+  </div>
+</section>
+
+<!-- ═══════ MAIN ═══════ -->
+<div id="main">
+
+  <!-- STATS RIBBON -->
+  <div class="ribbon rv" role="region" aria-label="Statistiche MV Cars">
+    <div class="rib-item">
+      <span class="rib-num" id="stat-reviews" data-count="5016">5016</span>
+      <span class="rib-lbl">Recensioni Google</span>
+    </div>
+    <div class="rib-item">
+      <span class="rib-num" id="stat-stock">—</span>
+      <span class="rib-lbl">Auto in Stock</span>
+    </div>
+    <div class="rib-item">
+      <span class="rib-num">20+</span>
+      <span class="rib-lbl">Anni di Esperienza</span>
+    </div>
+    <div class="rib-item">
+      <span class="rib-num">100%</span>
+      <span class="rib-lbl">Garanzia Inclusa</span>
+    </div>
+  </div>
+
+  <div class="irid-rule" aria-hidden="true"></div>
+
+  <!-- ANNUNCI -->
+  <section id="annunci" class="section" aria-labelledby="annunci-heading">
+    <div class="section-inner">
+      <p class="s-label rv">Stock attuale</p>
+      <h2 class="s-title rv" id="annunci-heading">
+        In vendita
+        <span class="sub">Auto usate verificate · Fogliano, Reggio Emilia</span>
+      </h2>
+      <div class="cars-meta rv" aria-live="polite" aria-atomic="true">
+        <span id="cars-count"></span>
+        <span class="cm-sep" aria-hidden="true">·</span>
+        <span id="cars-updated"></span>
+        <span class="cm-sep" aria-hidden="true">·</span>
+        <a class="cm-link"
+           href="https://impresapiu.subito.it/shops/54997-mv-cars"
+           target="_blank" rel="noopener noreferrer">
+          Tutti gli annunci su Subito.it →
+        </a>
+      </div>
+      <div id="cars-container" aria-live="polite" aria-atomic="false">
+        <div class="cars-state cars-loading" role="status">
+          <span class="cars-state-icon" aria-hidden="true">◎</span>
+          <p class="cars-state-msg">
+            Caricamento<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="irid-rule" aria-hidden="true"></div>
+
+  <!-- PERCHÉ MV CARS -->
+  <section id="perche" class="section" aria-labelledby="perche-heading">
+    <div class="section-inner">
+      <p class="s-label rv">Perché sceglierci</p>
+      <h2 class="s-title rv" id="perche-heading">
+        MV Cars
+        <span class="sub">La qualità che ti aspetti, il servizio che meriti</span>
+      </h2>
+      <div class="perche-grid">
+        <div class="perche-item rv">
+          <span class="perche-icon" aria-hidden="true">◈</span>
+          <h3>Esperienza diretta</h3>
+          <p>Oltre 20 anni nel settore auto. Marco segue personalmente ogni trattativa — dalla valutazione alla consegna — senza intermediari.</p>
+        </div>
+        <div class="perche-item rv">
+          <span class="perche-icon" aria-hidden="true">◎</span>
+          <h3>Garanzia su ogni vettura</h3>
+          <p>Ogni auto venduta include garanzia. Nessun costo nascosto, nessuna sorpresa dopo l'acquisto. La chiarezza è una priorità.</p>
+        </div>
+        <div class="perche-item rv">
+          <span class="perche-icon" aria-hidden="true">⬡</span>
+          <h3>Tutto gestito da noi</h3>
+          <p>Permuta, finanziamento, pratiche di passaggio e assicurazione: gestiamo ogni aspetto in modo semplice e trasparente.</p>
+        </div>
+        <div class="perche-item rv">
+          <span class="perche-icon" aria-hidden="true">✦</span>
+          <h3>Risposta rapida</h3>
+          <p>Nessun call center. Parli direttamente con Marco, disponibile su telefono e WhatsApp. Risposte chiare, tempi brevi.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="irid-rule" aria-hidden="true"></div>
+
+  <!-- PROCESSO ACQUISTO -->
+  <section id="processo" class="section" aria-labelledby="processo-heading">
+    <div class="section-inner">
+      <p class="s-label rv">Come funziona</p>
+      <h2 class="s-title rv" id="processo-heading">
+        Il processo di acquisto
+        <span class="sub">Semplice, trasparente, senza sorprese</span>
+      </h2>
+      <div class="steps rv">
+        <div class="step">
+          <span class="step-num" aria-hidden="true">01</span>
+          <h3>Scegli la vettura</h3>
+          <p>Naviga gli annunci o contattaci direttamente. Ti aiutiamo a trovare l'auto giusta per le tue esigenze e il tuo budget.</p>
+        </div>
+        <div class="step-sep" aria-hidden="true"></div>
+        <div class="step">
+          <span class="step-num" aria-hidden="true">02</span>
+          <h3>Vieni in sede</h3>
+          <p>Vieni a Fogliano, prova la vettura e fai tutte le domande che vuoi. Il test drive è gratuito e senza alcun impegno.</p>
+        </div>
+        <div class="step-sep" aria-hidden="true"></div>
+        <div class="step">
+          <span class="step-num" aria-hidden="true">03</span>
+          <h3>Definisci il pagamento</h3>
+          <p>Scegli tra contanti, finanziamento o permuta del tuo usato. Ti guidiamo nelle opzioni più convenienti per te.</p>
+        </div>
+        <div class="step-sep" aria-hidden="true"></div>
+        <div class="step">
+          <span class="step-num" aria-hidden="true">04</span>
+          <h3>Ritira l'auto</h3>
+          <p>L'auto viene revisionata e consegnata con garanzia. Le pratiche di passaggio proprietà le gestiamo interamente noi.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="irid-rule" aria-hidden="true"></div>
+
+  <!-- SERVIZI -->
+  <section id="servizi" class="section" aria-labelledby="servizi-heading">
+    <div class="section-inner">
+      <p class="s-label rv">Cosa offriamo</p>
+      <h2 class="s-title rv" id="servizi-heading">
+        Servizi
+        <span class="sub">Tutto incluso · Nessuna sorpresa</span>
+      </h2>
+      <div class="serv-grid">
+        <div class="serv-item rv">
+          <span class="serv-num">01</span>
+          <h3>Permuta</h3>
+          <p>Valutiamo il tuo veicolo al miglior prezzo di mercato. La stima è gratuita, immediata e senza impegno.</p>
+        </div>
+        <div class="serv-item rv">
+          <span class="serv-num">02</span>
+          <h3>Finanziamento</h3>
+          <p>Rate personalizzate per ogni profilo. Soluzioni flessibili e accesso facilitato, anche per chi non ha acquistato auto in precedenza.</p>
+        </div>
+        <div class="serv-item rv">
+          <span class="serv-num">03</span>
+          <h3>Garanzia inclusa</h3>
+          <p>Ogni vettura viene consegnata con garanzia. I dettagli variano per veicolo: chiedici informazioni sull'auto che ti interessa.</p>
+        </div>
+        <div class="serv-item rv">
+          <span class="serv-num">04</span>
+          <h3>Tagliando e revisione</h3>
+          <p>Prima della consegna eseguiamo una verifica tecnica completa. L'auto arriva pronta all'uso, in sicurezza.</p>
+        </div>
+        <div class="serv-item rv">
+          <span class="serv-num">05</span>
+          <h3>Pratiche auto</h3>
+          <p>Passaggi di proprietà, immatricolazioni, polizze assicurative. Gestiamo tutta la burocrazia in modo rapido e preciso.</p>
+        </div>
+        <div class="serv-item rv">
+          <span class="serv-num">06</span>
+          <h3>Test drive</h3>
+          <p>Prova la vettura prima di ogni decisione. Nessun impegno, nessuna pressione. Vieni quando vuoi in orario di apertura.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="irid-rule" aria-hidden="true"></div>
+
+  <!-- REVIEWS -->
+  <section id="reviews" class="section" aria-labelledby="reviews-heading">
+    <div class="section-inner">
+      <p class="s-label rv">Recensioni verificate</p>
+      <h2 class="s-title rv" id="reviews-heading">
+        Cosa dicono di noi
+        <span class="sub">5.016 recensioni · Media 5 stelle su Google</span>
+      </h2>
+      <div class="reviews-grid">
+        <div class="review-card rv">
+          <span class="rev-stars" aria-label="5 stelle su 5">★★★★★</span>
+          <p class="rev-text">Abbiamo trovato Marco così per caso — titubante l'ho contattato. Dopo l'appuntamento per vedere la macchina non ho avuto più dubbi. Professionale e disponibile in ogni fase.</p>
+          <span class="rev-author">Oriana Cardella · una settimana fa</span>
+        </div>
+        <div class="review-card rv">
+          <span class="rev-stars" aria-label="5 stelle su 5">★★★★★</span>
+          <p class="rev-text">Ho acquistato un Fiorino per uso aziendale e mi sono trovato molto bene. Marco è stato professionale, chiaro in ogni fase e sempre disponibile a fornire le informazioni necessarie.</p>
+          <span class="rev-author">G_ Nord · 3 mesi fa</span>
+        </div>
+        <div class="review-card rv">
+          <span class="rev-stars" aria-label="5 stelle su 5">★★★★★</span>
+          <p class="rev-text">Dopo una brutta esperienza con un altro concessionario abbiamo conosciuto Marco. Massima serietà dal primo momento — auto in perfetto stato, consegna nei tempi. Consigliatissimo.</p>
+          <span class="rev-author">Ciro Candela · 3 mesi fa</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="irid-rule" aria-hidden="true"></div>
+
+  <!-- FAQ -->
+  <section id="faq" class="section" aria-labelledby="faq-heading">
+    <div class="section-inner">
+      <p class="s-label rv">FAQ</p>
+      <h2 class="s-title rv" id="faq-heading">
+        Domande frequenti
+        <span class="sub">Tutto quello che vuoi sapere prima di comprare</span>
+      </h2>
+      <div class="faq-list rv" id="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">
+            <span>Le auto sono garantite?</span>
+            <svg class="faq-chevron" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 5l5 5 5-5"/></svg>
+          </button>
+          <div class="faq-a" role="region" hidden>
+            <p>Sì. Ogni vettura venduta da MV Cars include una garanzia. I dettagli — durata e copertura — variano in base al veicolo e alla tipologia di acquisto. Contattaci per informazioni sull'auto specifica che ti interessa.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">
+            <span>Posso permutare il mio usato?</span>
+            <svg class="faq-chevron" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 5l5 5 5-5"/></svg>
+          </button>
+          <div class="faq-a" role="region" hidden>
+            <p>Sì, accettiamo permute. Valutiamo il tuo veicolo usato e, se sei interessato a un'auto nel nostro stock, possiamo scalarne il valore dall'acquisto. La valutazione è gratuita e senza impegno.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">
+            <span>È possibile finanziare l'acquisto?</span>
+            <svg class="faq-chevron" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 5l5 5 5-5"/></svg>
+          </button>
+          <div class="faq-a" role="region" hidden>
+            <p>Sì. Offriamo soluzioni di finanziamento con rate personalizzabili in base al tuo profilo e al tuo budget. Parlaci delle tue esigenze: ti proponiamo le opzioni più convenienti disponibili.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">
+            <span>Posso prenotare una visita o un test drive?</span>
+            <svg class="faq-chevron" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 5l5 5 5-5"/></svg>
+          </button>
+          <div class="faq-a" role="region" hidden>
+            <p>Certo. Contattaci su telefono o WhatsApp per concordare un appuntamento a tuo comodo. Il test drive è gratuito e senza alcun impegno d'acquisto.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">
+            <span>Le pratiche auto le gestite voi?</span>
+            <svg class="faq-chevron" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 5l5 5 5-5"/></svg>
+          </button>
+          <div class="faq-a" role="region" hidden>
+            <p>Sì. Gestiamo internamente il passaggio di proprietà, l'immatricolazione e, se lo desideri, anche la polizza assicurativa. Non devi preoccuparti di nulla: pensiamo a tutto noi.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" aria-expanded="false">
+            <span>Gli annunci sul sito sono aggiornati?</span>
+            <svg class="faq-chevron" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 5l5 5 5-5"/></svg>
+          </button>
+          <div class="faq-a" role="region" hidden>
+            <p>Gli annunci mostrati riflettono il nostro stock su Subito.it e vengono aggiornati periodicamente. Per verificare la disponibilità attuale di uno specifico veicolo, contattaci direttamente: è il modo più rapido e sicuro.</p>
+          </div>
+        </div>
+
+      </div><!-- /faq-list -->
+    </div>
+  </section>
+
+  <div class="irid-rule" aria-hidden="true"></div>
+
+  <!-- CONTATTI -->
+  <section id="contatti" class="section" aria-labelledby="contatti-heading">
+    <div class="section-inner">
+      <p class="s-label rv">Vieni a trovarci</p>
+      <h2 class="s-title rv" id="contatti-heading">
+        Contatti
+        <span class="sub">Marco Morreale · MV Cars di Morreale Marco</span>
+      </h2>
+      <div class="cnt-grid">
+        <div class="rv">
+          <div class="cnt-field">
+            <span class="cnt-lbl">Indirizzo</span>
+            <span class="cnt-val">Via Melissa, 15/b — 42123 Fogliano (RE)</span>
+          </div>
+          <div class="cnt-field">
+            <span class="cnt-lbl">Telefono</span>
+            <span class="cnt-val"><a href="tel:+393791728793">379 172 8793</a></span>
+          </div>
+          <div class="cnt-field">
+            <span class="cnt-lbl">WhatsApp</span>
+            <span class="cnt-val">
+              <a href="https://wa.me/393791728793?text=Ciao%20Marco%2C%20vorrei%20informazioni%20su%20una%20vettura." target="_blank" rel="noopener noreferrer">379 172 8793 (preferito per info rapide)</a>
+            </span>
+          </div>
+          <div class="cnt-field">
+            <span class="cnt-lbl">Orari</span>
+            <span class="cnt-val">Lunedì – Sabato, dalle 09:00</span>
+          </div>
+          <div class="cnt-field">
+            <span class="cnt-lbl">Instagram</span>
+            <span class="cnt-val"><a href="https://www.instagram.com/mv_cars25/" target="_blank" rel="noopener noreferrer">@mv_cars25</a></span>
+          </div>
+          <div class="cnt-field">
+            <span class="cnt-lbl">Annunci</span>
+            <span class="cnt-val"><a href="https://impresapiu.subito.it/shops/54997-mv-cars" target="_blank" rel="noopener noreferrer">Subito.it / MV Cars</a></span>
+          </div>
+          <div class="cnt-actions">
+            <a href="tel:+393791728793" class="btn btn-primary">Chiama ora</a>
+            <a href="https://wa.me/393791728793?text=Ciao%20Marco%2C%20vorrei%20informazioni." class="btn btn-wa" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          </div>
+        </div>
+        <div class="rv">
+          <div class="map-box">
+            <div class="map-pin-wrap">
+              <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                <circle cx="16" cy="16" r="15" stroke="rgba(140,180,220,0.22)" stroke-width="1"/>
+                <circle cx="16" cy="16" r="3"  fill="rgba(140,180,220,0.32)"/>
+                <line x1="16" y1="1"  x2="16" y2="6"  stroke="rgba(140,180,220,0.18)" stroke-width="1"/>
+                <line x1="16" y1="26" x2="16" y2="31" stroke="rgba(140,180,220,0.18)" stroke-width="1"/>
+                <line x1="1"  y1="16" x2="6"  y2="16" stroke="rgba(140,180,220,0.18)" stroke-width="1"/>
+                <line x1="26" y1="16" x2="31" y2="16" stroke="rgba(140,180,220,0.18)" stroke-width="1"/>
+              </svg>
+            </div>
+            <div class="map-addr">Via Melissa, 15/b<br>Fogliano · Reggio Emilia</div>
+            <a class="map-lnk"
+               href="https://www.google.com/maps/search/Via+Melissa+15b+Fogliano+Reggio+Emilia"
+               target="_blank" rel="noopener noreferrer">
+              Apri su Google Maps →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section id="cta-finale" aria-labelledby="cta-finale-heading">
+    <div class="cta-finale-inner rv">
+      <p class="s-label" style="justify-content:center">Pronti a partire?</p>
+      <h2 class="cta-finale-title" id="cta-finale-heading">Hai trovato l'auto giusta?</h2>
+      <p class="cta-finale-sub">Contattaci ora — Marco risponde direttamente su WhatsApp o per telefono, senza attese inutili.</p>
+      <div class="cta-finale-actions">
+        <a href="tel:+393791728793" class="btn btn-primary">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 2.5c0 0 1.5-1.5 3 .5s1.5 3 1 3.5-.8.5-.4 1.5S8 10.5 9 11s1-.5 1.5-.5 2.5 1.5 2.5 1.5-1.5 2.5-3 1.5S2 8.5 2 2.5z"/></svg>
+          Chiama · 379 172 8793
+        </a>
+        <a href="https://wa.me/393791728793?text=Ciao%20Marco%2C%20ho%20visto%20il%20sito%20MV%20Cars%20e%20vorrei%20informazioni."
+           class="btn btn-wa" target="_blank" rel="noopener noreferrer">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp
+        </a>
+        <a href="#annunci" class="btn btn-outline">Torna alle auto →</a>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /main -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft">
+    <span class="ft-logo">MV Cars</span>
+    <span class="ft-copy">
+      Via Melissa 15/b · 42123 Fogliano (RE) · Tel. <a href="tel:+393791728793">379 172 8793</a><br>
+      MV Cars di Morreale Marco ·
+      <a href="https://impresapiu.subito.it/shops/54997-mv-cars" target="_blank" rel="noopener noreferrer">Subito.it</a>
+      ·
+      <a href="https://www.instagram.com/mv_cars25/" target="_blank" rel="noopener noreferrer">Instagram</a>
+    </span>
+    <ul class="ft-links" role="list">
+      <li><a href="#annunci">Auto</a></li>
+      <li><a href="#servizi">Servizi</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#contatti">Contatti</a></li>
+    </ul>
+  </div>
+</footer>
+
+<!-- FAB GROUP -->
+<div class="fab-group" aria-label="Azioni rapide">
+  <a href="https://wa.me/393791728793?text=Ciao%20Marco%2C%20vorrei%20informazioni%20su%20una%20vettura."
+     class="fab fab-wa" target="_blank" rel="noopener noreferrer" aria-label="Contatta su WhatsApp">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+  <a href="tel:+393791728793" class="fab fab-phone" aria-label="Chiama MV Cars">
+    <svg width="18" height="18" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 2.5c0 0 1.5-1.5 3 .5s1.5 3 1 3.5-.8.5-.4 1.5S8 10.5 9 11s1-.5 1.5-.5 2.5 1.5 2.5 1.5-1.5 2.5-3 1.5S2 8.5 2 2.5z"/></svg>
+  </a>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     THREE.JS — iridescent chrome star
+     Respects prefers-reduced-motion.
+     Reduces quality on mobile for performance.
+═══════════════════════════════════════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+'use strict';
+{
+  // Skip entirely if user prefers reduced motion
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.getElementById('c').style.display = 'none';
+  } else {
+
+  const IS_MOBILE = window.innerWidth < 640;
+  const SEG       = IS_MOBILE ? 28 : 56;   // fewer segments → less GPU on mobile
+  const DPR       = Math.min(window.devicePixelRatio || 1, IS_MOBILE ? 1.5 : 2);
+
+  const canvas   = document.getElementById('c');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(DPR);
+  renderer.outputEncoding      = THREE.sRGBEncoding;
+  renderer.toneMapping         = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.08;
+
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 80);
+  camera.position.set(0, 0, 5.8);
+
+  /* ── matcap baked on canvas ── */
+  function buildMatcap() {
+    const S=512,cv=document.createElement('canvas');cv.width=cv.height=S;
+    const c2=cv.getContext('2d');
+    c2.fillStyle='#000';c2.fillRect(0,0,S,S);
+    c2.save();c2.beginPath();c2.arc(S/2,S/2,S/2-1,0,Math.PI*2);c2.clip();
+    const bg=c2.createLinearGradient(0,0,0,S);
+    bg.addColorStop(0,'#111820');bg.addColorStop(.28,'#181f2a');bg.addColorStop(.55,'#101520');bg.addColorStop(.78,'#090d14');bg.addColorStop(1,'#040609');
+    c2.fillStyle=bg;c2.fillRect(0,0,S,S);
+    const ps=c2.createRadialGradient(S*.62,S*.26,0,S*.62,S*.26,S*.42);
+    ps.addColorStop(0,'rgba(255,255,255,1)');ps.addColorStop(.08,'rgba(240,248,255,.9)');ps.addColorStop(.22,'rgba(195,222,255,.55)');ps.addColorStop(.48,'rgba(130,170,230,.2)');ps.addColorStop(1,'rgba(0,0,0,0)');
+    c2.fillStyle=ps;c2.fillRect(0,0,S,S);
+    const ss=c2.createRadialGradient(S*.28,S*.35,0,S*.28,S*.35,S*.2);
+    ss.addColorStop(0,'rgba(200,225,255,.48)');ss.addColorStop(.45,'rgba(150,195,255,.18)');ss.addColorStop(1,'rgba(0,0,0,0)');
+    c2.fillStyle=ss;c2.fillRect(0,0,S,S);
+    const hb=c2.createLinearGradient(0,S*.5,0,S*.66);
+    hb.addColorStop(0,'rgba(0,0,0,0)');hb.addColorStop(.3,'rgba(70,100,145,.48)');hb.addColorStop(.7,'rgba(55,85,125,.3)');hb.addColorStop(1,'rgba(0,0,0,0)');
+    c2.fillStyle=hb;c2.fillRect(0,0,S,S);
+    const fl=c2.createRadialGradient(S*.06,S*.58,0,S*.06,S*.58,S*.5);
+    fl.addColorStop(0,'rgba(65,105,200,.38)');fl.addColorStop(.55,'rgba(48,82,168,.14)');fl.addColorStop(1,'rgba(0,0,0,0)');
+    c2.fillStyle=fl;c2.fillRect(0,0,S,S);
+    const br=c2.createRadialGradient(S/2,S*.96,0,S/2,S*.96,S*.32);
+    br.addColorStop(0,'rgba(110,148,210,.48)');br.addColorStop(.52,'rgba(80,115,180,.18)');br.addColorStop(1,'rgba(0,0,0,0)');
+    c2.fillStyle=br;c2.fillRect(0,0,S,S);
+    const ir=c2.createLinearGradient(S*.08,S*.08,S*.92,S*.92);
+    ir.addColorStop(0,'rgba(0,210,230,.055)');ir.addColorStop(.38,'rgba(180,85,255,.045)');ir.addColorStop(.65,'rgba(255,180,50,.055)');ir.addColorStop(1,'rgba(0,210,230,.05)');
+    c2.fillStyle=ir;c2.fillRect(0,0,S,S);
+    c2.restore();
+    const t=new THREE.CanvasTexture(cv);t.needsUpdate=true;return t;
+  }
+
+  /* ── star geometry ── */
+  function buildStarGeo() {
+    const tipY=1.08,tipX=0.80,tipH=0.25,valD=0.082,cRec=0.032,pull=0.924;
+    const TIPS=[[0,tipY],[tipX,0],[0,-tipY],[-tipX,0]];
+    const pos=[],idx=[],cVerts=[];let base=0;
+    for(let q=0;q<4;q++){
+      const[ax,ay]=TIPS[q],[bx,by]=TIPS[(q+1)%4];
+      const BX=new Float32Array(SEG+1),BY=new Float32Array(SEG+1);
+      for(let i=0;i<=SEG;i++){
+        const u=i/SEG,lx=ax+(bx-ax)*u,ly=ay+(by-ay)*u;
+        const mx=(ax+bx)*.042,my=(ay+by)*.042,pf=Math.sin(Math.PI*u)*pull;
+        BX[i]=lx*(1-pf)+mx*pf;BY[i]=ly*(1-pf)+my*pf;
+      }
+      pos.push(0,0,-cRec);cVerts.push(base);const cI=base++;
+      for(let j=1;j<=SEG;j++){
+        const v=j/SEG,vp=Math.pow(v,1.18);
+        for(let i=0;i<=SEG;i++){
+          const u=i/SEG,c2=Math.cos(Math.PI*u),s2=Math.sin(Math.PI*u);
+          pos.push(BX[i]*v,BY[i]*v,(-cRec*Math.pow(1-v,3))+vp*(tipH*c2*c2-valD*s2*s2));
+        }
+      }
+      const r0=base;
+      for(let i=0;i<SEG;i++)idx.push(cI,r0+i,r0+i+1);
+      for(let j=0;j<SEG-1;j++)for(let i=0;i<SEG;i++){
+        const a=base+j*(SEG+1)+i,b=a+1,c=a+(SEG+1),d=c+1;
+        idx.push(a,c,d,a,d,b);
+      }
+      base+=SEG*(SEG+1);
+    }
+    const g=new THREE.BufferGeometry();
+    g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+    g.setIndex(idx);g.computeVertexNormals();
+    const n=g.attributes.normal;
+    for(const ci of cVerts)n.setXYZ(ci,0,0,1);n.needsUpdate=true;
+    return g;
+  }
+
+  /* ── shader material ── */
+  const mat=new THREE.ShaderMaterial({
+    side:THREE.DoubleSide,
+    uniforms:{uMatcap:{value:buildMatcap()},uCam:{value:camera.position},uTime:{value:0}},
+    vertexShader:`varying vec3 vN,vP;void main(){vec4 wp=modelMatrix*vec4(position,1.);vP=wp.xyz;vN=normalize(mat3(modelMatrix)*normal);gl_Position=projectionMatrix*viewMatrix*wp;}`,
+    fragmentShader:`precision highp float;
+    uniform sampler2D uMatcap;uniform vec3 uCam;uniform float uTime;
+    varying vec3 vN,vP;
+    vec3 film(float t){t=fract(t);return vec3(.5+.5*cos(6.283*(t)),0.5+.5*cos(6.283*(t+.33)),.5+.5*cos(6.283*(t+.67)));}
+    void main(){
+      if(!gl_FrontFacing){gl_FragColor=vec4(.03,.03,.04,1.);return;}
+      vec3 N=normalize(vN),V=normalize(uCam-vP);float NV=max(.001,dot(N,V));
+      vec3 vn=normalize((viewMatrix*vec4(N,0.)).xyz);
+      vec3 base=texture2D(uMatcap,vn.xy*.5+.5).rgb*.86+.014;
+      float F=.55+(1.-.55)*pow(1.-NV,5.);
+      float opd=1.75+(1.-NV)*3.8;
+      vec3 ir=film(opd*.185+.06);float lum=dot(ir,vec3(.3,.59,.11));ir=mix(vec3(lum),ir,.55);
+      vec3 col=mix(base,base*ir*2.1,(.15+.58*F)*.62);
+      col+=vec3(.96,.99,1.)*pow(max(0.,dot(N,normalize(V+normalize(vec3(1.8,2.6,3.2))))),720.)*3.5;
+      col+=vec3(.52,.72,1.)*pow(max(0.,dot(N,normalize(V+normalize(vec3(-2.2,.6,2.5))))),95.)*.82;
+      col+=vec3(.95,.78,.42)*pow(max(0.,dot(N,normalize(V+normalize(vec3(.5,-1.8,1.8))))),44.)*.42;
+      col+=vec3(.42,.62,.96)*pow(F,2.4)*.45;
+      col=(col*(2.51*col+.03))/(col*(2.43*col+.59)+.14);
+      col=pow(max(col,vec3(0.)),vec3(1./2.2));gl_FragColor=vec4(col,1.);}`
+  });
+
+  const star=new THREE.Mesh(buildStarGeo(),mat);
+  star.rotation.x=-0.18;star.rotation.z=-0.04;
+  scene.add(star);
+
+  // back glow
+  {const S=512,cv=document.createElement('canvas');cv.width=cv.height=S;
+  const c2=cv.getContext('2d'),g=c2.createRadialGradient(S/2,S/2,0,S/2,S/2,S/2);
+  g.addColorStop(0,'rgba(48,80,130,.30)');g.addColorStop(.4,'rgba(30,52,100,.13)');g.addColorStop(.72,'rgba(12,20,45,.04)');g.addColorStop(1,'rgba(0,0,0,0)');
+  c2.fillStyle=g;c2.fillRect(0,0,S,S);
+  const gm=new THREE.Mesh(new THREE.PlaneGeometry(11,11),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(cv),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}));
+  gm.position.z=-1.5;scene.add(gm);}
+
+  function onResize(){
+    const W=innerWidth,H=innerHeight;
+    renderer.setSize(W,H);camera.aspect=W/H;camera.updateProjectionMatrix();
+    star.scale.setScalar(Math.min(W,H)*.0026);
+  }
+  window.addEventListener('resize',onResize);onResize();
+
+  let mx=0,my=0,drag=false,lx=0,ly=0,vx=0,vy=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{if(!drag){mx=(e.clientX/innerWidth-.5)*2;my=(e.clientY/innerHeight-.5)*2;return;}vx=(e.clientY-ly)*.007;vy=(e.clientX-lx)*.007;rx+=vx;ry+=vy;lx=e.clientX;ly=e.clientY;});
+  document.addEventListener('mousedown',e=>{drag=true;lx=e.clientX;ly=e.clientY;vx=vy=0;});
+  document.addEventListener('mouseup',()=>{drag=false;});
+  document.addEventListener('touchmove',e=>{if(!drag)return;e.preventDefault();const t=e.touches[0];vx=(t.clientY-ly)*.007;vy=(t.clientX-lx)*.007;rx+=vx;ry+=vy;lx=t.clientX;ly=t.clientY;},{passive:false});
+  document.addEventListener('touchstart',e=>{drag=true;lx=e.touches[0].clientX;ly=e.touches[0].clientY;vx=vy=0;});
+  document.addEventListener('touchend',()=>{drag=false;});
+
+  let autoR=0,smX=0,smY=0;
+  window.addEventListener('scroll',()=>{const sy=scrollY;autoR=sy*.004;canvas.style.opacity=Math.max(0,1-sy/(innerHeight*.80));},{passive:true});
+
+  let prev=0;
+  // On mobile cap at ~30fps to save battery
+  const FPS_CAP = IS_MOBILE ? 33 : 0;
+  (function loop(now){
+    requestAnimationFrame(loop);
+    if(FPS_CAP && now-prev < FPS_CAP){return;}
+    prev=now;
+    if(!drag){vx*=.92;vy*=.92;rx+=vx;ry+=vy;}
+    smX+=(my*-.22-smX)*.042;smY+=(mx*.26-smY)*.042;
+    const tY=autoR+ry+smY+Math.sin(now*.0004)*.035;
+    const tX=-0.18+rx+smX;
+    star.rotation.y+=(tY-star.rotation.y)*.065;
+    star.rotation.x+=(tX-star.rotation.x)*.065;
+    mat.uniforms.uTime.value=now*.001;
+    mat.uniforms.uCam.value.copy(camera.position);
+    renderer.render(scene,camera);
+  })(0);
+
+  } // end reduced-motion check
+}
+</script>
+
+<!-- ═══════════════════════════════════════════
+     APP — Cars sync + FAQ + Scroll + Counters
+═══════════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* ────────────────────────────────────────
+   CONFIG
+──────────────────────────────────────── */
+const CFG = {
+  feedUrl:      '/data/subito.json',
+  pollInterval: 5 * 60 * 1000,   // 5 min
+  fetchTimeout: 8000,             // 8 s
+  imgBase:      'https://images.sbito.it/api/v1/sbt-ads-images-pro/images/',
+  imgRule:      '?rule=bigthumbs-auto',
+  shopUrl:      'https://impresapiu.subito.it/shops/54997-mv-cars',
+};
+
+/* ────────────────────────────────────────
+   UTILS
+──────────────────────────────────────── */
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g,  '&amp;')
+    .replace(/</g,  '&lt;')
+    .replace(/>/g,  '&gt;')
+    .replace(/"/g,  '&quot;')
+    .replace(/'/g,  '&#x27;');
+}
+
+function isSafeUrl(url) {
+  if (!url) return false;
+  try {
+    const u = new URL(String(url));
+    return u.protocol === 'https:' || u.protocol === 'http:';
+  } catch { return false; }
+}
+
+async function fetchWithTimeout(url, ms) {
+  const ctrl = new AbortController();
+  const id   = setTimeout(() => ctrl.abort(), ms);
+  try {
+    const res = await fetch(url, {
+      cache:   'no-cache',
+      headers: { Accept: 'application/json' },
+      signal:  ctrl.signal,
+    });
+    return res;
+  } finally {
+    clearTimeout(id);
+  }
+}
+
+/* ────────────────────────────────────────
+   FALLBACK DATA
+──────────────────────────────────────── */
+const FALLBACK_CARS = [
+  { id:'637144582', name:'Fiat 500 1.2 Lounge',              year:2016, km:'110.000–119.999', fuel:'Benzina',  gear:'Manuale',    price:'7.500',  imgKey:'c5/c5a7481b-6a4a-4a9b-b2d8-262ecf1f8a47', url:'https://www.subito.it/auto/fiat-500-1-2-lounge-brindisi-637144582.htm' },
+  { id:'621673065', name:'Ford Fiesta 1.5 TDCi 75CV',        year:2014, km:'150.000–159.999', fuel:'Diesel',   gear:'Manuale',    price:'7.400',  imgKey:'a7/a721ff83-4f09-4578-a365-3e1fe277e256', url:'https://www.subito.it/auto/ford-fiesta-1-5-tdci-75cv-5-porte-brindisi-621673065.htm' },
+  { id:'617065284', name:'Peugeot 208 BlueHDi 100 Allure',   year:2019, km:'140.000–149.999', fuel:'Diesel',   gear:'Manuale',    price:'9.700',  imgKey:'50/50f6f017-0159-44e9-a3e7-c5cf5edbccee', url:'https://www.subito.it/auto/peugeot-208-bluehdi-100-s-s-5-porte-allure-brindisi-617065284.htm' },
+  { id:'608557700', name:'Jeep Grand Cherokee 3.0 V6 CRD',   year:2019, km:'160.000–169.999', fuel:'Diesel',   gear:'Automatico', price:'25.450', imgKey:'2e/2e6ee30d-cdfc-488c-9b74-91402864be56', url:'https://www.subito.it/auto/jeep-grand-cherokee-grand-cherokee-3-0-v6-crd-250--brindisi-608557700.htm' },
+  { id:'605712546', name:'Peugeot 208 PureTech 100 Allure',  year:2022, km:'60.000–64.999',   fuel:'Benzina',  gear:'Manuale',    price:'13.950', imgKey:'a1/a14db9d2-ddfb-44df-811c-eab63ac583ac', url:'https://www.subito.it/auto/peugeot-208-puretech-100-stop-start-5-porte-allure-brindisi-605712546.htm' },
+  { id:'605464612', name:'Fiat 500X 1.3 MultiJet 95 Cross',  year:2018, km:'60.000–64.999',   fuel:'Diesel',   gear:'Manuale',    price:'13.950', imgKey:'0a/0ac1335c-91ee-45b6-905a-835d186ec353', url:'https://www.subito.it/auto/fiat-500x-1-3-multijet-95-cv-cross-brindisi-605464612.htm' },
+  { id:'605353790', name:'Volkswagen Polo 1.2 TDI Comfort',  year:2013, km:'200.000–249.999', fuel:'Diesel',   gear:'Manuale',    price:'7.250',  imgKey:'e1/e184277e-2427-4fb5-ac26-58400344accc', url:'https://www.subito.it/auto/volkswagen-polo-1-2-tdi-dpf-5-p-comfortline-brindisi-605353790.htm' },
+  { id:'604018457', name:'Smart ForTwo EQ Passion',           year:2021, km:'40.000–44.999',   fuel:'Elettrica',gear:'Automatico', price:'11.700', imgKey:'80/806b6b0a-7a02-4f18-b6c9-0e6ed9a75e88', url:'https://www.subito.it/auto/smart-fortwo-eq-passion-brindisi-604018457.htm' },
+  { id:'603454307', name:'Fiat Panda 1.0 FireFly Hybrid',    year:2022, km:'15.000–19.999',   fuel:'Ibrida',   gear:'Manuale',    price:'10.950', imgKey:null, url:'https://www.subito.it/auto/fiat-panda-1-0-firefly-s-s-hybrid-brindisi-603454307.htm' },
+  { id:'602987729', name:'Renault Captur dCi 90 Neopat.',    year:2018, km:'110.000–119.999', fuel:'Diesel',   gear:'Automatico', price:'13.450', imgKey:null, url:'https://www.subito.it/auto/renault-captur-dci-8v-90-cv-edc-x-neopatentati-brindisi-602987729.htm' },
+];
+
+/* ────────────────────────────────────────
+   NORMALIZE — maps any schema to our model
+──────────────────────────────────────── */
+function normalizeCar(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  // Already in our schema
+  if (raw.imgKey !== undefined) return raw;
+  const url = raw.url ?? raw.link ?? CFG.shopUrl;
+  return {
+    id:     String(raw.id ?? raw.ad_id ?? Math.random()),
+    name:   raw.subject ?? raw.title ?? raw.name ?? 'Veicolo',
+    year:   raw.year  ?? raw.anno  ?? '—',
+    km:     raw.km    ?? raw.chilometraggio ?? '—',
+    fuel:   raw.fuel  ?? raw.alimentazione ?? '—',
+    gear:   raw.gear  ?? raw.cambio ?? '—',
+    price:  raw.price ?? raw.prezzo ?? '—',
+    imgKey: raw.imgKey ?? raw.image_key ?? null,
+    imgUrl: raw.imgUrl ?? raw.image_url ?? null,
+    url:    isSafeUrl(url) ? url : CFG.shopUrl,
+  };
+}
+
+/* ────────────────────────────────────────
+   HASH — detects data changes
+──────────────────────────────────────── */
+function hashCars(cars) {
+  return cars.map(c => `${c.id}|${c.price}`).join('::');
+}
+
+/* ────────────────────────────────────────
+   FUEL CLASS
+──────────────────────────────────────── */
+const FUEL_CLS = { Benzina:'ct-b', Diesel:'ct-d', Elettrica:'ct-e', Ibrida:'ct-h' };
+function fuelCls(f) { return FUEL_CLS[String(f)] || 'ct-m'; }
+
+/* ────────────────────────────────────────
+   COLUMNS — responsive by count
+──────────────────────────────────────── */
+function colsForCount(n) {
+  if (n === 1) return 1;
+  if (n === 2) return 2;
+  if (n === 3) return 3;
+  if (n <= 6)  return 2;
+  return 3;
+}
+
+/* ────────────────────────────────────────
+   IMG FALLBACK
+──────────────────────────────────────── */
+window.__mvImgErr = function(el, initials) {
+  const ph = document.createElement('div');
+  ph.className = 'car-img-ph';
+  ph.setAttribute('aria-hidden', 'true');
+  ph.textContent = initials;
+  el.parentNode.replaceChild(ph, el);
+};
+
+/* ────────────────────────────────────────
+   BUILD CARD HTML — all output escaped
+──────────────────────────────────────── */
+function buildCardHtml(car) {
+  const init = escapeHtml(car.name.slice(0, 2).toUpperCase());
+  const name  = escapeHtml(car.name);
+  const year  = escapeHtml(String(car.year));
+  const km    = escapeHtml(String(car.km));
+  const fuel  = escapeHtml(String(car.fuel));
+  const gear  = escapeHtml(String(car.gear));
+  const price = escapeHtml(String(car.price));
+  const url   = escapeHtml(car.url);
+
+  let imgHtml;
+  if (car.imgUrl && isSafeUrl(car.imgUrl)) {
+    const src = escapeHtml(car.imgUrl);
+    imgHtml = `<img src="${src}" alt="${name}" loading="lazy" decoding="async" onerror="window.__mvImgErr(this,'${init}')">`;
+  } else if (car.imgKey) {
+    const src = escapeHtml(CFG.imgBase + car.imgKey + CFG.imgRule);
+    imgHtml = `<img src="${src}" alt="${name}" loading="lazy" decoding="async" onerror="window.__mvImgErr(this,'${init}')">`;
+  } else {
+    imgHtml = `<div class="car-img-ph" aria-hidden="true">${init}</div>`;
+  }
+
+  return `
+    <a class="car-card rv"
+       href="${url}" target="_blank" rel="noopener noreferrer"
+       data-car-id="${escapeHtml(car.id)}"
+       aria-label="${name} — ${year} — €${price}">
+      <div class="car-img">${imgHtml}</div>
+      <div class="car-body">
+        <div class="car-tags" aria-label="Caratteristiche">
+          <span class="ct ${fuelCls(car.fuel)}">${fuel}</span>
+          <span class="ct ct-m">${gear}</span>
+        </div>
+        <h3 class="car-name">${name}</h3>
+        <p class="car-spec">${year} · ${km} km</p>
+        <div class="car-footer">
+          <span class="car-price">€ ${price}</span>
+          <span class="car-arrow" aria-hidden="true">Vedi →</span>
+        </div>
+      </div>
+    </a>`;
+}
+
+/* ────────────────────────────────────────
+   UPDATE STOCK COUNT + META
+──────────────────────────────────────── */
+function updateStockMeta(n) {
+  const stockEl   = document.getElementById('stat-stock');
+  const countEl   = document.getElementById('cars-count');
+  const updatedEl = document.getElementById('cars-updated');
+  if (stockEl)   stockEl.textContent   = String(n);
+  if (countEl)   countEl.textContent   = `${n} annunci`;
+  if (updatedEl) updatedEl.textContent = `Aggiornato ${new Date().toLocaleTimeString('it-IT', {hour:'2-digit',minute:'2-digit'})}`;
+}
+
+/* ────────────────────────────────────────
+   RENDER CARS — idempotent via hash
+──────────────────────────────────────── */
+let _lastHash = null;
+
+function renderCars(cars) {
+  const hash = hashCars(cars);
+  if (hash === _lastHash) return;
+  _lastHash = hash;
+
+  const container = document.getElementById('cars-container');
+  if (!container) return;
+
+  const n    = cars.length;
+  const cols = colsForCount(n);
+
+  container.innerHTML = `
+    <div class="cars-grid" style="--cols:${cols}" role="list">
+      ${cars.map(buildCardHtml).join('')}
+    </div>`;
+
+  updateStockMeta(n);
+
+  // Scroll-reveal for new cards
+  container.querySelectorAll('.rv').forEach((el, i) => {
+    scrollRevealObs.observe(el);
+    setTimeout(() => el.classList.add('in'), 80 + i * 45);
+  });
+}
+
+/* ────────────────────────────────────────
+   SHOW STATE — loading / empty / error
+──────────────────────────────────────── */
+function showState(type, msg, sub) {
+  const container = document.getElementById('cars-container');
+  if (!container) return;
+  const icons = { loading:'◎', empty:'⬡', error:'◈' };
+  const isLoad = type === 'loading';
+  container.innerHTML = `
+    <div class="cars-state${isLoad ? ' cars-loading' : ''}" role="${isLoad ? 'status' : 'alert'}">
+      <span class="cars-state-icon" aria-hidden="true">${icons[type] || '◎'}</span>
+      <p class="cars-state-msg">${escapeHtml(msg)}${isLoad ? '<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>' : ''}</p>
+      ${sub ? `<p class="cars-state-sub">${sub}</p>` : ''}
+      ${type === 'error' ? `<a href="${CFG.shopUrl}" class="btn btn-outline" target="_blank" rel="noopener noreferrer" style="margin-top:1rem">Vedi gli annunci su Subito.it →</a>` : ''}
+    </div>`;
+}
+
+/* ────────────────────────────────────────
+   SYNC — fetch feed, fallback on failure
+──────────────────────────────────────── */
+let _syncAttempted = false;
+
+async function syncCars() {
+  try {
+    const res = await fetchWithTimeout(CFG.feedUrl, CFG.fetchTimeout);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    const raw  = Array.isArray(json) ? json : (json.cars ?? json.annunci ?? []);
+    if (!Array.isArray(raw) || raw.length === 0) throw new Error('feed vuoto');
+    const cars = raw.map(normalizeCar).filter(Boolean);
+    if (cars.length === 0) throw new Error('nessun annuncio valido');
+    _syncAttempted = true;
+    renderCars(cars);
+  } catch (err) {
+    console.info('[MV Cars] Feed non disponibile, uso fallback:', err.message);
+    // First load → show fallback cars
+    if (!_syncAttempted) {
+      _syncAttempted = true;
+      renderCars(FALLBACK_CARS.map(normalizeCar).filter(Boolean));
+    }
+    // Subsequent polls → keep existing display, just update timestamp silently
+    updateStockMeta(FALLBACK_CARS.length);
+  }
+}
+
+/* ────────────────────────────────────────
+   POLL
+──────────────────────────────────────── */
+function startPolling() {
+  showState('loading', 'Caricamento');
+  syncCars();
+  setInterval(syncCars, CFG.pollInterval);
+}
+
+/* ────────────────────────────────────────
+   FAQ ACCORDION
+──────────────────────────────────────── */
+function initFaq() {
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item   = btn.closest('.faq-item');
+      const answer = item.querySelector('.faq-a');
+      const isOpen = item.classList.contains('open');
+
+      // Close all others
+      document.querySelectorAll('.faq-item.open').forEach(openItem => {
+        openItem.classList.remove('open');
+        openItem.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
+        openItem.querySelector('.faq-a').hidden = true;
+      });
+
+      // Toggle current
+      if (!isOpen) {
+        item.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+        answer.hidden = false;
+      }
+    });
+  });
+}
+
+/* ════════════════════════════════════════
+   SCROLL REVEAL
+════════════════════════════════════════ */
+const scrollRevealObs = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('in'), i * 60);
+      scrollRevealObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.07 });
+
+document.querySelectorAll('.rv').forEach(el => scrollRevealObs.observe(el));
+
+/* ════════════════════════════════════════
+   COUNTER ANIMATION
+════════════════════════════════════════ */
+const counterObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const el     = entry.target;
+    const target = parseInt(el.dataset.count, 10);
+    if (isNaN(target)) return;
+    let cur = 0;
+    const step  = Math.max(1, Math.ceil(target / 72));
+    const timer = setInterval(() => {
+      cur = Math.min(cur + step, target);
+      el.textContent = cur.toLocaleString('it-IT');
+      if (cur >= target) clearInterval(timer);
+    }, 18);
+    counterObs.unobserve(el);
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('[data-count]').forEach(el => counterObs.observe(el));
+
+/* ════════════════════════════════════════
+   BOOT
+════════════════════════════════════════ */
+initFaq();
+startPolling();
+</script>
+</body>
+</html>
