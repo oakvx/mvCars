@@ -1345,8 +1345,6 @@ const CFG = {
   maxPhotosPerCar: 12,
   minImageSide: 260,
   blockedImageHints: ['logo', 'icon', 'avatar', 'profile', 'placeholder', 'sprite', 'googleusercontent'],
-  subitoImageRules: ['gallery-2x-auto', 'hd-watermark', 'large', 'bigthumbs-auto'],
-  subitoImageBase: 'https://images.sbito.it/api/v1/sbt-ads-images-pro/images/',
 };
 
 const FALLBACK_CARS = [
@@ -1408,9 +1406,8 @@ function pickBestSrcFromSrcset(srcset, baseUrl) {
     .sort((a, b) => b.size - a.size)[0]?.url ?? null;
 }
 function normalizeImageUrl(url) {
-  const resolved = safeUrl(url);
-  if (!resolved) return null;
-  return resolved;
+  if (!url) return null;
+  return url.replace(/([?&])(rule|width|height|quality)=[^&]+/gi, '$1').replace(/[?&]$/, '');
 }
 function imageLooksRelevant(url, width = 0, height = 0) {
   const clean = String(url || '').toLowerCase();
@@ -1418,24 +1415,17 @@ function imageLooksRelevant(url, width = 0, height = 0) {
   if (Math.min(width || 9999, height || 9999) < CFG.minImageSide) return false;
   return !CFG.blockedImageHints.some(hint => clean.includes(hint));
 }
-function buildLegacyImageCandidates(raw) {
-  const candidates = [];
-  const explicitUrls = [raw.imgUrl, raw.img, raw.image, raw.cover];
-  explicitUrls.forEach(url => {
-    const resolved = safeUrl(url);
-    if (resolved) candidates.push({ url: resolved, width: 1200, height: 900 });
-  });
-  const key = raw.imgKey || raw.imageKey;
-  if (key) {
-    CFG.subitoImageRules.forEach(rule => {
-      candidates.push({
-        url: `${CFG.subitoImageBase}${key}?rule=${rule}`,
-        width: rule === 'bigthumbs-auto' ? 800 : 1600,
-        height: rule === 'bigthumbs-auto' ? 600 : 1200,
-      });
-    });
+function dedupeImages(images) {
+  const seen = new Set();
+  const out = [];
+  for (const image of images) {
+    const normalized = normalizeImageUrl(image.url);
+    if (!normalized || seen.has(normalized)) continue;
+    if (!imageLooksRelevant(normalized, image.width, image.height)) continue;
+    seen.add(normalized);
+    out.push({ ...image, url: normalized });
   }
-  return candidates;
+  return out;
 }
 function dedupeImages(images) {
   const seen = new Set();
@@ -1537,22 +1527,17 @@ function extractCarDataFromDoc(doc, url, seed = {}) {
 }
 function normalizeCar(raw) {
   if (!raw || typeof raw !== 'object') return null;
-  const galleryImages = toArray(raw.images).flatMap(item => {
-    if (typeof item === 'string') return [{ url: item, width: 1200, height: 900 }];
-    if (item && typeof item === 'object') return [{ url: item.url || item.src, width: Number(item.width || 1200), height: Number(item.height || 900) }];
-    return [];
-  });
-  const images = dedupeImages([...galleryImages, ...buildLegacyImageCandidates(raw)]).map(image => image.url);
+  const images = dedupeImages(toArray(raw.images).map(url => ({ url, width: 1200, height: 900 }))).map(image => image.url);
   return {
-    id: String(raw.id || raw.ad_id || crypto.randomUUID()),
-    name: raw.name || raw.title || raw.subject || 'Veicolo',
-    cat: raw.cat || raw.categoria || 'Auto usata',
-    year: raw.year || raw.anno || '—',
-    km: raw.km || raw.chilometraggio || '—',
-    fuel: raw.fuel || raw.alimentazione || '—',
-    gear: raw.gear || raw.cambio || raw.gearbox || '—',
-    price: String(raw.price || raw.prezzo || '—'),
-    url: safeUrl(raw.url || raw.link) || CFG.shopUrl,
+    id: String(raw.id || crypto.randomUUID()),
+    name: raw.name || raw.title || 'Veicolo',
+    cat: raw.cat || 'Auto usata',
+    year: raw.year || '—',
+    km: raw.km || '—',
+    fuel: raw.fuel || '—',
+    gear: raw.gear || '—',
+    price: String(raw.price || '—'),
+    url: safeUrl(raw.url) || CFG.shopUrl,
     images,
   };
 }
