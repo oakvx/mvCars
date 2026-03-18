@@ -1427,6 +1427,18 @@ function dedupeImages(images) {
   }
   return out;
 }
+function dedupeImages(images) {
+  const seen = new Set();
+  const out = [];
+  for (const image of images) {
+    const normalized = normalizeImageUrl(image.url);
+    if (!normalized || seen.has(normalized)) continue;
+    if (!imageLooksRelevant(normalized, image.width, image.height)) continue;
+    seen.add(normalized);
+    out.push({ ...image, url: normalized });
+  }
+  return out;
+}
 function extractImageCandidatesFromNode(node, baseUrl) {
   const attrs = ['src', 'currentSrc', 'data-src', 'data-lazy', 'data-original', 'data-zoom-src'];
   const urls = [];
