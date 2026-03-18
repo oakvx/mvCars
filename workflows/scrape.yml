@@ -17,17 +17,18 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20
-        uses: actions/setup-node@v4
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
         with:
-          node-version: '20'
-          cache: 'npm'
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: requirements.txt
 
-      - name: Installa dipendenze
-        run: npm ci
+      - name: Installa dipendenze Python
+        run: pip install -r requirements.txt
 
       - name: Esegui scraper
-        run: node scripts/scrape.js
+        run: python3 scripts/scrape.py
 
       - name: Commit e push (se ci sono novità)
         run: |
