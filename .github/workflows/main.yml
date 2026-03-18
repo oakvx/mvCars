@@ -2,8 +2,8 @@ name: Aggiorna annunci MV Cars
 
 on:
   schedule:
-    - cron: '0 */6 * * *'   # ogni 6 ore
-  workflow_dispatch:          # avvio manuale dal pannello Actions
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
   push:
     branches: [main]
 
@@ -17,16 +17,16 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Setup Node.js 20
-        uses: actions/setup-node@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          node-version: '20'
+          python-version: '3.11'
 
       - name: Installa dipendenze
-        run: npm install
+        run: pip install requests beautifulsoup4
 
       - name: Esegui scraper
-        run: node scripts/scrape.js
+        run: python scripts/scrape.py
 
       - name: Commit e push (se ci sono novità)
         run: |
