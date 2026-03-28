@@ -778,6 +778,28 @@ function cardSlide(id,dir,e){
   setCardImg(id,next);
 }
 
+function handleGalleryImageError(img){
+  if(!img) return;
+  const fallbackSrc = img.dataset.fallbackSrc;
+  if(fallbackSrc && img.src !== fallbackSrc){
+    img.src = fallbackSrc;
+    return;
+  }
+
+  img.dataset.failed = '1';
+  const wrap = img.closest('.car-imgs');
+  if(!wrap || !wrap.id) return;
+  const galleryId = wrap.id.replace(/^imgs-/, '');
+  const imgs = getCardImgs(galleryId);
+  const failedIndex = imgs.indexOf(img);
+  if(failedIndex === -1) return;
+
+  const nextValidIndex = imgs.findIndex((node, index) => index !== failedIndex && node.dataset.failed !== '1');
+  if(nextValidIndex !== -1 && cardState[galleryId]?.cur === failedIndex){
+    setCardImg(galleryId, nextValidIndex);
+  }
+}
+
 // --- Lightbox ---
 let lbCard='', lbIdx=0;
 const lbImgEl=document.getElementById('lb-img');
@@ -997,7 +1019,7 @@ const SUBITO = {
   shopUrl: 'https://impresapiu.subito.it/shops/57262-mv-cars',
   fetchTimeout: 12000,
   pollInterval: 5 * 60 * 1000,
-  cacheKey: 'mv-cars-subito-live-v1',
+  cacheKey: 'mv-cars-subito-live-v2',
   cacheTtl: 30 * 60 * 1000,
   maxCars: 24,
   maxHydrate: 12,
@@ -1011,6 +1033,17 @@ const SUBITO = {
     (url) => `https://r.jina.ai/${url}`
   ]
 };
+
+const BLOCKED_RESPONSE_PATTERNS = [
+  /access denied/i,
+  /request blocked/i,
+  /forbidden/i,
+  /captcha/i,
+  /pardon our interruption/i,
+  /security check/i,
+  /bot verification/i,
+  /reference\s*#/i
+];
 
 function escHtml(value){
   return String(value ?? '')
@@ -1048,6 +1081,36 @@ function uniqueBy(items, keyFn){
     seen.add(key);
     return true;
   });
+}
+
+function isBlockedResponse(text){
+  const source = String(text || '').slice(0, 6000);
+  if(!source) return true;
+  return BLOCKED_RESPONSE_PATTERNS.some((pattern) => pattern.test(source));
+}
+
+function isBlockedValue(value){
+  return BLOCKED_RESPONSE_PATTERNS.some((pattern) => pattern.test(String(value || '')));
+}
+
+function sanitizeCars(cars){
+  if(!Array.isArray(cars)) return [];
+  return cars
+    .filter((car) => car && safeUrl(car.url) && !isBlockedValue(car.name) && !isBlockedValue(car.price))
+    .map((car) => {
+      const images = Array.isArray(car.images)
+        ? car.images.filter((image) => {
+            const src = safeUrl(image?.src || image?.lightboxSrc || '');
+            return !!src;
+          })
+        : [];
+
+      return {
+        ...car,
+        imgUrl: safeUrl(car.imgUrl || '') || null,
+        images
+      };
+    });
 }
 
 function parseMoney(text){
@@ -1180,6 +1243,7 @@ async function fetchTextWithFallback(url){
       if(!response.ok) throw new Error(`HTTP ${response.status}`);
       const text = await response.text();
       if(!text || text.length < 200) throw new Error('Risposta troppo corta');
+      if(isBlockedResponse(text)) throw new Error('Access denied');
       return text;
     }catch(error){
       clearTimeout(timeoutId);
@@ -1314,8 +1378,10 @@ async function hydrateCars(cars){
 }
 
 function saveCarsCache(cars){
+  const safeCars = sanitizeCars(cars);
+  if(!safeCars.length) return;
   try{
-    localStorage.setItem(SUBITO.cacheKey, JSON.stringify({ ts: Date.now(), cars }));
+    localStorage.setItem(SUBITO.cacheKey, JSON.stringify({ ts: Date.now(), cars: safeCars }));
   }catch{}
 }
 
@@ -1326,7 +1392,8 @@ function loadCarsCache(){
     const parsed = JSON.parse(raw);
     if(!parsed || !Array.isArray(parsed.cars) || !parsed.ts) return null;
     if(Date.now() - parsed.ts > SUBITO.cacheTtl) return null;
-    return parsed.cars;
+    const safeCars = sanitizeCars(parsed.cars);
+    return safeCars.length ? safeCars : null;
   }catch{
     return null;
   }
@@ -1360,12 +1427,13 @@ function renderLiveGallery(car, galleryId, fullName){
   const imageMarkup = images.map((image, index) => `
     <img
       src="${escHtml(image.src || image.lightboxSrc || '')}"
-      ${image.srcSet ? `srcset="${escHtml(image.srcSet)}" sizes="(max-width: 900px) 100vw, 33vw"` : ''}
+      ${image.lightboxSrc && image.lightboxSrc !== image.src ? `data-fallback-src="${escHtml(image.lightboxSrc)}"` : ''}
       class="${index === 0 ? 'active' : ''}"
       alt="${escHtml(fullName)}"
-      loading="lazy"
+      loading="${index === 0 ? 'eager' : 'lazy'}"
       decoding="async"
-      referrerpolicy="no-referrer"
+      fetchpriority="${index === 0 ? 'high' : 'auto'}"
+      onerror="handleGalleryImageError(this)"
       onclick="openLightbox('${galleryId}',${index})"
     >
   `).join('');
@@ -1421,8 +1489,10 @@ function renderLiveCarCard(car, index){
 }
 
 function renderLiveCars(cars){
-  if(!carsTrack || !Array.isArray(cars) || !cars.length) return false;
-  carsTrack.innerHTML = cars.map((car, index) => renderLiveCarCard(car, index)).join('');
+  const safeCars = sanitizeCars(cars);
+  const imageRichCars = safeCars.filter((car) => car.imgUrl || (Array.isArray(car.images) && car.images.length));
+  if(!carsTrack || !safeCars.length || !imageRichCars.length) return false;
+  carsTrack.innerHTML = safeCars.map((car, index) => renderLiveCarCard(car, index)).join('');
   initDots();
   bindCardGlow(carsTrack);
   return true;
