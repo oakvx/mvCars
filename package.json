@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "set-admin-password": "node scripts/set-admin-password.js",
     "scrape": "python3 scripts/scrape.py"
   }
 }
